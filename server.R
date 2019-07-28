@@ -1,8 +1,9 @@
 #Aalaya Seshadri(11915082), Shlok Mittal(11915071)
+
 library("shiny")
 
 server <- shinyServer(function(input, output) {
-  
+#Do the pos tagging for textfile uploaded, delete sentence column, filter for only those parts of speech which are selected
   Dataset <- reactive({
     if (is.null(input$file)) { return(NULL) }
     else{
@@ -23,12 +24,12 @@ server <- shinyServer(function(input, output) {
       return(x)
     }
   })
-  
+#display 100 rows in Data table
   output$table1 = renderDataTable({ 
     b<-Dataset()
     b[1:100,]
   })
-  
+#gathering data for word cloud.. only nouns and verbs
   word_cloud <- reactive({
     if (is.null(input$file)) { return(NULL) }
     else{
@@ -56,9 +57,7 @@ server <- shinyServer(function(input, output) {
     }
   })
   
-  clusters <- reactive({
-    kmeans(Dataset(), input$clusters)
-  })
+#wordcloud for nouns
   
   noun_plot <- reactive({
     suppressPackageStartupMessages({
@@ -73,6 +72,7 @@ server <- shinyServer(function(input, output) {
     wordcloud(a$token,min.freq = 1,max.words = 200,scale = c(scale = c(3.25,0.25)),colors = brewer.pal(5, "Dark2"))
     
   })
+#wordcloud for verbs
   verb_plot <- reactive({
     suppressPackageStartupMessages({
       if (!require(udpipe)){install.packages("udpipe")}
@@ -87,13 +87,13 @@ server <- shinyServer(function(input, output) {
     
   })
   
-  
+#rendering noun and verb cloud side by side
   output$plot1 = renderPlot({
     par(mfrow=c(1,2))
     noun_plot()
     verb_plot()
   })
-  
+#top 30 cooccurences plotted
   output$plot2 = renderPlot({
     doc_cooc <- cooccurrence(
       x=Dataset(), 
@@ -120,7 +120,7 @@ server <- shinyServer(function(input, output) {
       theme_graph(base_family = "Arial Narrow") +  
       theme(legend.position = "none") +
       
-      labs(title = "Cooccurrences within 3 words distance")
+      labs(title = "Top 30 cooccurences")
     
   })
   

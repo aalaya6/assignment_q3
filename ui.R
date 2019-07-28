@@ -2,7 +2,7 @@
 
 library("shiny")
 
-
+#ui sidebar with check box selection and file upload provision
 ui <- shinyUI(
   fluidPage(
     
@@ -22,12 +22,11 @@ ui <- shinyUI(
                              "Pronoun"="PRON",
                              "Proper Noun"="PROPN"
                            ),c("NOUN","ADJ","PROPN")),
-        tableOutput("data"),
+        tableOutput("data")
         
-        numericInput('clusters', 'Number of Clusters', 3,
-                     min = 1, max = 9)     ),   # end of sidebar panel
+          ),  
       
-      
+#main panel with 4 tabs(overview,annotated,wordcloud,cooccurence) which shows server functions output 
       mainPanel(
         
         tabsetPanel(type = "tabs",
